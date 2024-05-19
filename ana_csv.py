@@ -1,0 +1,87 @@
+import csv
+import re
+import time
+
+start_time = time.time()
+
+# Input CSV file
+input_file = "/run/media/suraj/KSS/Studies/RVCE/CVE/csv_data.csv"
+
+# Initialize data structures
+cve_counts = {
+    "Offline Interference": 0,
+    "Password Access": 0,
+    "Running Distributions/Products": 0,
+    "Large Scale Business": 0
+}
+
+cve_severities = {
+    ("Offline Interference", "Low"): 0,
+    ("Offline Interference", "Medium"): 0,
+    ("Offline Interference", "High"): 0,
+    ("Offline Interference", "Critical"): 0,
+    ("Password Access", "Low"): 0,
+    ("Password Access", "Medium"): 0,
+    ("Password Access", "High"): 0,
+    ("Password Access", "Critical"): 0,
+    ("Running Distributions/Products", "Low"): 0,
+    ("Running Distributions/Products", "Medium"): 0,
+    ("Running Distributions/Products", "High"): 0,
+    ("Running Distributions/Products", "Critical"): 0,
+    ("Large Scale Business", "Low"): 0,
+    ("Large Scale Business", "Medium"): 0,
+    ("Large Scale Business", "High"): 0,
+    ("Large Scale Business", "Critical"): 0,
+}
+
+# Define categories and their associated keywords
+keywords = {
+    "Offline Interference": ["offline interference"],
+    "Password Access": ["password", "authentication"],
+    "Running Distributions/Products": ["running distribution", "affected product"],
+    "Large Scale Business": ["large scale business", "enterprise"]
+}
+
+# Process each line in the CSV file
+with open(input_file, newline='', encoding='latin-1') as csvfile:  # Specify 'latin-1' encoding
+    reader = csv.reader(csvfile)
+    # Skip header lines
+    for _ in range(8):
+        next(reader)
+    
+    for row in reader:
+        cve_id, status, description, references, phase, votes, comments = row
+        
+        # Determine severity based on "Status" field
+        if status == "Entry":
+            severity = "High"
+        elif status == "Candidate":
+            severity = "Medium"
+        else:
+            severity = "Low"
+
+        # Analyze description for keywords
+        for category, category_keywords in keywords.items():
+            for keyword in category_keywords:
+                if re.search(r'\b' + re.escape(keyword) + r'\b', description, re.IGNORECASE):
+                    cve_counts[category] += 1
+                    cve_severities[(category, severity)] += 1
+                    break
+
+# Print results
+print("-----------------------------------------------------------------")
+print("CVE Frequency and Severity by Category:")
+print("-----------------------------------------------------------------")
+
+for category in keywords.keys():
+    print(f"Category: {category}")
+    print("----------------------")
+    print(f"Frequency: {cve_counts[category]}")
+
+    # Print severity breakdown
+    for severity in ["Low", "Medium", "High", "Critical"]:
+        print(f"  {severity}: {cve_severities[(category, severity)]}")
+    print("")
+
+execution_time = time.time() - start_time
+print(f"Script execution time: {execution_time:.2f} seconds")
