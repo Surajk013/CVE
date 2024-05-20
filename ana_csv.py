@@ -4,10 +4,8 @@ import time
 
 start_time = time.time()
 
-# Input CSV file
 input_file = "/run/media/suraj/KSS/Studies/RVCE/CVE/csv_data.csv"
 
-# Initialize data structures
 cve_counts = {
     "Offline Interference": 0,
     "Password Access": 0,
@@ -34,7 +32,7 @@ cve_severities = {
     ("Large Scale Business", "Critical"): 0,
 }
 
-# Define categories and their associated keywords
+# categories and their associated keywords
 keywords = {
     "Offline Interference": ["offline interference"],
     "Password Access": ["password", "authentication"],
@@ -42,17 +40,15 @@ keywords = {
     "Large Scale Business": ["large scale business", "enterprise"]
 }
 
-# Process each line in the CSV file
 with open(input_file, newline='', encoding='latin-1') as csvfile:  # Specify 'latin-1' encoding
     reader = csv.reader(csvfile)
-    # Skip header lines
     for _ in range(8):
         next(reader)
     
     for row in reader:
         cve_id, status, description, references, phase, votes, comments = row
         
-        # Determine severity based on "Status" field
+        # severity based on "Status" field
         if status == "Entry":
             severity = "High"
         elif status == "Candidate":
@@ -60,7 +56,7 @@ with open(input_file, newline='', encoding='latin-1') as csvfile:  # Specify 'la
         else:
             severity = "Low"
 
-        # Analyze description for keywords
+        # description for keywords
         for category, category_keywords in keywords.items():
             for keyword in category_keywords:
                 if re.search(r'\b' + re.escape(keyword) + r'\b', description, re.IGNORECASE):
@@ -68,7 +64,6 @@ with open(input_file, newline='', encoding='latin-1') as csvfile:  # Specify 'la
                     cve_severities[(category, severity)] += 1
                     break
 
-# Print results
 print("-----------------------------------------------------------------")
 print("CVE Frequency and Severity by Category:")
 print("-----------------------------------------------------------------")
@@ -78,7 +73,6 @@ for category in keywords.keys():
     print("----------------------")
     print(f"Frequency: {cve_counts[category]}")
 
-    # Print severity breakdown
     for severity in ["Low", "Medium", "High", "Critical"]:
         print(f"  {severity}: {cve_severities[(category, severity)]}")
     print("")
