@@ -8,7 +8,7 @@ input_file = "/run/media/suraj/KSS/Studies/RVCE/CVE/csv_data.csv"
 
 cve_counts = {
     "Offline Interference": 0,
-    "Password Access": 0,
+    "Password Access": 0, 
     "Running Distributions/Products": 0,
     "Large Scale Business": 0
 }
