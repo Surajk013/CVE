@@ -1,0 +1,6 @@
+paper-phase/allitems.csv filter=lfs diff=lfs merge=lfs -text
+. filter=lfs diff=lfs merge=lfs -text
+Paper-phase/allitems.csv filter=lfs diff=lfs merge=lfs -text
+initial-2024-may/by_year/allitems-cvrf.xml filter=lfs diff=lfs merge=lfs -text
+initial-2024-may/by_year/cvelistV5-main.zip filter=lfs diff=lfs merge=lfs -text
+initial-2024-may/data.xlsx filter=lfs diff=lfs merge=lfs -text
